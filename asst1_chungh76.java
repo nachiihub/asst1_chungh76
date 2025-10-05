@@ -8,12 +8,13 @@ public class asst1_chungh76 {
 		boolean status = true;
 		//Checks user input for errors for coil diameter and wire diameter inputs
 		if (turn == false) {
+			//Checks if the user input is a positive number
 			if (user_input < 0) {
 				status = false;
 				System.out.println("ENTER A POSITIVE INPUT");
 				return status;
 			}
-		
+			//Checks if the user input is within bounds
 			if (lower_bound > user_input || user_input > upper_bound) {
 				status = false;
 				System.out.println("INPUT MUST BE WITHIN BOUNDS ");
@@ -23,11 +24,19 @@ public class asst1_chungh76 {
 		
 		//Checks user input for errors for number of turns
 		if (turn == true) {
+			//Checks if the user input is an integer
+			if (user_input != Math.floor(user_input)) {
+      			status = false;
+        		System.out.println("N SHOULD BE AN INTEGER");
+        		return status;
+   			}
+			//Checks if the user input is a positive integer
 			if(user_input <= 0){
 				status = false;
 				System.out.println("N SHOULD BE A POSITIVE INTEGER");
 				return status;
 			}
+			//Checks if the user input is within bounds
 			if (lower_bound > user_input || user_input > upper_bound) {
 				status = false;
 				System.out.println("INPUT MUST BE WITHIN BOUNDS ");
@@ -38,103 +47,119 @@ public class asst1_chungh76 {
 		return status;
 	}
 	
-	//Returns the user's input for either coil_diameter or wire diameter
+	// Returns the user's input for either coil_diameter or wire diameter
 	public double getValidInput(Scanner scanner, double num_input, boolean coil_d, boolean wire_d) {
 		boolean valid = false;
 		boolean error = false;
 		num_input = 0;
-		
-		//Gets valid input for when asking for coil diameter
+
+		// Gets valid input for when asking for coil diameter
 		if (coil_d == true) {
-			while(!valid) {
-				//Uses try and catch to check if the input is a valid double
+			while (!valid) {
+				// Uses try and catch to check if the input is a valid double
 				try {
 					num_input = scanner.nextDouble();
 					valid = true;
-				}
-				catch (InputMismatchException e){
+				} catch (InputMismatchException e) {
 					System.out.println("ENTER A VALID INPUT");
 					scanner.nextLine();
 					System.out.print("Enter coil diameter D (m): ");
 				}
 			}
-			// Checks if the input is within bounds and positive
-			while(error == false) {
-				error = error_check(num_input, 0.25, 1.3, false);
-				if (error == true){
-					break;
-				}
-				// Reprompts the user for input if there is an error
+			error = error_check(num_input, 0.25, 1.3, false);
+			// If invalid, keep re-prompting; only check bounds after a successful numeric read
+			while (error == false) {
 				System.out.print("Enter coil diameter D (m): ");
-				if (error == false) {
+				try {
 					num_input = scanner.nextDouble();
+					error = error_check(num_input, 0.25, 1.3, false);
+					if (error == true) {
+						break;
+					}
+				} catch (InputMismatchException e) {
+					System.out.println("ENTER A VALID INPUT");
+					scanner.nextLine(); // clear invalid input
+					// skip bounds check this iteration
 				}
 			}
 		}
-		
-		//Gets valid input for when asking for wire diameter
+		// Gets valid input for when asking for wire diameter
 		if (wire_d == true) {
-			while(!valid) {
-				//Uses try and catch to check if the input is a valid double
+			while (!valid) {
+				// Uses try and catch to check if the input is a valid double
 				try {
 					num_input = scanner.nextDouble();
 					valid = true;
-				}
-				catch (InputMismatchException e){
+				} catch (InputMismatchException e) {
 					System.out.println("ENTER A VALID INPUT");
 					scanner.nextLine();
+					System.out.print("Enter wire diameter d (m): ");
 				}
 			}
-			// Checks if the input is within bounds and positive
-			while(error == false) {
-				error = error_check(num_input, 0.05, 2, false);
-				if (error == true){
-					break;
-				}
-				// Reprompts the user for input if there is an error
+			error = error_check(num_input, 0.05, 2, false);
+			// If invalid, keep re-prompting; only check bounds after a successful numeric read
+			while (error == false) {
 				System.out.print("Enter wire diameter d (m): ");
-				if (error == false) {
+				try {
 					num_input = scanner.nextDouble();
+					error = error_check(num_input, 0.05, 2, false);
+					if (error == true) {
+						break;
+					}
+				} catch (InputMismatchException e) {
+					System.out.println("ENTER A VALID INPUT");
+					scanner.nextLine(); // clear invalid input
+					// skip bounds check this iteration
 				}
 			}
-		}	
+		}
+
 		return num_input;
 	}
-	
-	//Returns the user's input for number of turns
+
+	// Returns the user's input for number of turns
 	public int getValidInput(Scanner scanner, int num_input, boolean turns) {
-			boolean valid = false;
-			boolean error = false;
-			num_input = 0;		
-			//Gets valid input for when asking for number of turns
-			if (turns == true) {
-				while(!valid) {
-					//Uses try and catch to check if the input is a valid integer
-					try {
-						num_input = scanner.nextInt();
-						valid = true;
-					}
-					catch (InputMismatchException e){
-						System.out.println("N SHOULD BE AN INTEGER");
-						scanner.nextLine();
-					}
+		boolean valid = false;
+		boolean error = false;
+		double temp_input = 0;   // use double first to detect if input is int or decimal
+		num_input = 0;
+
+		// Gets valid input for when asking for number of turns
+		if (turns == true) {
+			while (!valid) {
+				// Uses try and catch to check if the input is a valid double
+				try {
+					temp_input = scanner.nextDouble();
+					valid = true;
+				} catch (InputMismatchException e) {
+					System.out.println("ENTER A VALID INPUT");
+					scanner.nextLine();
+					System.out.print("Enter number of turns N: ");
 				}
-				// Checks if the input is within bounds and positive
-				while(error == false) {
-					error = error_check(num_input, 1, 15, true);
+			}
+			error = error_check(temp_input, 1, 15, true);
+			// If invalid, keep re-prompting and only check bounds after a successful numeric read
+			while (error == false) {
+				System.out.print("Enter number of turns N: ");
+				try {
+					temp_input = scanner.nextDouble();
+					error = error_check(temp_input, 1, 15, true);
 					if (error == true){
 						break;
 					}
-					// Reprompts the user for input if there is an error
-					System.out.print("Enter number of turns N: ");
-					if (error == false) {
-						num_input = scanner.nextInt();
-					}
+				} catch (InputMismatchException e) {
+					System.out.println("ENTER A VALID INPUT");
+					scanner.nextLine(); // clear invalid input
 				}
-				return num_input;
 			}
+
+			// Cast double to int after all checks are done
+			num_input = (int) temp_input;
 			return num_input;
 		}
+
+		return num_input;
+	}
 	
 	//Calculate the weight based on the given parameters
 	public double WeightCalculation(double coil_d, double wire_d, int turn_num) {
@@ -143,6 +168,7 @@ public class asst1_chungh76 {
 		double mass = (turn_num + 2)*coil_d * Math.pow(wire_d, 2); //Calculate the mass using m(D,d,N) = (N+2)*D*d^2
 		weight = mass * gravity;
 		double truncated_weight = Math.floor(weight * 100) / 100;
+
 		return truncated_weight;
 	}
 	
@@ -167,6 +193,7 @@ public class asst1_chungh76 {
 			*/
 			System.out.println("ENTER A VALID INPUT");
 		}
+
 		return status;
 	}
 	
